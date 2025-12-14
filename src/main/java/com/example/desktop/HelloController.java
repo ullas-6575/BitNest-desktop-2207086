@@ -22,7 +22,20 @@ public class HelloController {
 
     @FXML
     void handleAdminLogin(ActionEvent event) {
-        System.out.println("Admin Login Clicked");
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("admin-login.fxml"));
+            Parent root = loader.load();
+
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.show();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.out.println("Error: Could not load admin-login.fxml. Check filename.");
+        }
     }
 
     @FXML
@@ -43,7 +56,6 @@ public class HelloController {
             System.out.println("Error: Could not load book1.fxml.");
         }
     }
-
     @FXML
     public void initialize() {
 
