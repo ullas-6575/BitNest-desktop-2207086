@@ -30,10 +30,22 @@ public class AdminLoginController {
         String password = txtPassword.getText();
         lblError.setText("");
         if ("ullas".equals(username) && "12345686".equals(password)) {
-            System.out.println("Login Successful!");
-
             lblError.setStyle("-fx-text-fill: green;");
-            lblError.setText("Login Successful! (Dashboard NYI)");
+            lblError.setText("Login Successful!");
+            try {
+
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("admin.fxml"));
+                Parent root = loader.load();
+
+                Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+                Scene scene = new Scene(root);
+                stage.setScene(scene);
+                stage.show();
+
+            } catch (IOException e) {
+                e.printStackTrace();
+                System.out.println("Error: Could not load admin.fxml");
+            }
 
         } else {
 

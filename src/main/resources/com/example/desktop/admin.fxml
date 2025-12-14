@@ -6,7 +6,10 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="450.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane fx:controller="com.example.desktop.adminController"
+            maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
+            prefHeight="450.0" prefWidth="600.0"
+            xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1">
     <children>
 
         <Label alignment="CENTER" layoutY="30.0" text="Booking Database" textAlignment="CENTER" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="30.0">
@@ -18,25 +21,25 @@
         <VBox alignment="CENTER" layoutX="175.0" layoutY="80.0" prefHeight="320.0" prefWidth="250.0" spacing="15.0" AnchorPane.bottomAnchor="50.0" AnchorPane.leftAnchor="175.0" AnchorPane.rightAnchor="175.0" AnchorPane.topAnchor="80.0">
             <children>
 
-                <Button fx:id="btnSeeGuests" mnemonicParsing="false" prefHeight="55.0" prefWidth="250.0" text="See Guests">
+                <Button fx:id="btnSeeGuests" onAction="#handleSeeGuests" mnemonicParsing="false" prefHeight="55.0" prefWidth="250.0" text="See Guests">
                     <font>
                         <Font name="System Bold" size="16.0" />
                     </font>
                 </Button>
 
-                <Button fx:id="btnSearch" mnemonicParsing="false" prefHeight="55.0" prefWidth="250.0" text="Search Guest">
+                <Button fx:id="btnSearch" onAction="#handleSearch" mnemonicParsing="false" prefHeight="55.0" prefWidth="250.0" text="Search Guest">
                     <font>
                         <Font name="System Bold" size="16.0" />
                     </font>
                 </Button>
 
-                <Button fx:id="btnModify" mnemonicParsing="false" prefHeight="55.0" prefWidth="250.0" text="Modify Booking">
+                <Button fx:id="btnModify" onAction="#handleModify" mnemonicParsing="false" prefHeight="55.0" prefWidth="250.0" text="Modify Booking">
                     <font>
                         <Font name="System Bold" size="16.0" />
                     </font>
                 </Button>
 
-                <Button fx:id="btnCheckout" mnemonicParsing="false" prefHeight="55.0" prefWidth="250.0" text="Confirm Checkout">
+                <Button fx:id="btnCheckout" onAction="#handleCheckout" mnemonicParsing="false" prefHeight="55.0" prefWidth="250.0" text="Confirm Checkout">
                     <font>
                         <Font name="System Bold" size="16.0" />
                     </font>

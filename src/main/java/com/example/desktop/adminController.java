@@ -3,7 +3,7 @@ package com.example.desktop;
 import javafx.fxml.FXML;
 import javafx.event.ActionEvent;
 
-public class ManagementController {
+public class adminController {
 
     @FXML
     void handleSeeGuests(ActionEvent event) {
