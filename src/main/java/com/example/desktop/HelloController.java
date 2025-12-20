@@ -42,7 +42,7 @@ public class HelloController {
     void handleBookRoom(ActionEvent event) {
         try {
 
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("book1.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("room_type.fxml"));
             Parent root = loader.load();
 
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
@@ -53,7 +53,7 @@ public class HelloController {
 
         } catch (IOException e) {
             e.printStackTrace();
-            System.out.println("Error: Could not load book1.fxml.");
+            System.out.println("Error: Could not load room_type.fxml.");
         }
     }
     @FXML

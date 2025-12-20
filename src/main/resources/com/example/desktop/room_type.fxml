@@ -6,10 +6,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:controller="com.example.desktop.MyController"
-            maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
-            prefHeight="400.0" prefWidth="600.0"
-            xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.desktop.room_type_Controller">
     <children>
 
         <Label alignment="CENTER" text="Welcome to Hotel BitNest" textAlignment="CENTER" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="40.0">
@@ -32,13 +29,13 @@
                     </font>
                 </Label>
 
-                <Button onAction="#handleSingleRoom" mnemonicParsing="false" prefHeight="50.0" prefWidth="220.0" text="Single Room (700tk/day)">
+                <Button mnemonicParsing="false" onAction="#handleSingleRoom" prefHeight="50.0" prefWidth="220.0" text="Single Room (700tk/day)">
                     <font>
                         <Font size="14.0" />
                     </font>
                 </Button>
 
-                <Button onAction="#handleApartment" mnemonicParsing="false" prefHeight="50.0" prefWidth="220.0" text="Apartment (1500tk/day)">
+                <Button mnemonicParsing="false" onAction="#handleApartment" prefHeight="50.0" prefWidth="220.0" text="Apartment (1500tk/day)">
                     <font>
                         <Font size="14.0" />
                     </font>
@@ -46,6 +43,7 @@
 
             </children>
         </VBox>
+      <Button layoutX="14.0" layoutY="14.0" mnemonicParsing="false"  onAction="#handleBackAction" text="back" />
 
     </children>
 </AnchorPane>

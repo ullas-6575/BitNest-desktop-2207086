@@ -34,7 +34,7 @@ public class AdminLoginController {
             lblError.setText("Login Successful!");
             try {
 
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("admin.fxml"));
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("adminpage.fxml"));
                 Parent root = loader.load();
 
                 Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
@@ -44,7 +44,7 @@ public class AdminLoginController {
 
             } catch (IOException e) {
                 e.printStackTrace();
-                System.out.println("Error: Could not load admin.fxml");
+//                System.out.println("Error: Could not load adminpage.fxml");
             }
 
         } else {
