@@ -6,7 +6,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
@@ -22,10 +21,7 @@ public class Room_selection_controller {
     @FXML
     private GridPane roomsGrid;
 
-    @FXML
-    private Button btnBook;
-
-
+    // Data passed from previous screen
     private String currentRoomType;
     private double currentPrice;
 
@@ -44,23 +40,24 @@ public class Room_selection_controller {
     public void setBookingData(String roomType, double price) {
         this.currentRoomType = roomType;
         this.currentPrice = price;
-
-        System.out.println("Loading rooms for: " + roomType);
-
-        List<Room> rooms = generateDummyRooms(roomType);
+        List<Room> rooms = getFixedRooms(roomType);
         loadRoomsToGrid(rooms);
     }
 
-
-    private List<Room> generateDummyRooms(String type) {
+    private List<Room> getFixedRooms(String type) {
         List<Room> list = new ArrayList<>();
         if (type.contains("Single")) {
             list.add(new Room("101", "Available"));
-            list.add(new Room("102", "Booked"));
+            list.add(new Room("102", "Available"));
             list.add(new Room("103", "Available"));
-        } else {
+            list.add(new Room("206", "Available"));
+            list.add(new Room("207", "Available"));
+        } else if (type.contains("Apartment")) {
             list.add(new Room("201", "Available"));
             list.add(new Room("202", "Available"));
+            list.add(new Room("203", "Available"));
+            list.add(new Room("110", "Available"));
+            list.add(new Room("111", "Available"));
         }
         return list;
     }
@@ -85,6 +82,7 @@ public class Room_selection_controller {
             roomsGrid.add(lblNum, 0, row);
             roomsGrid.add(lblStatus, 1, row);
             roomsGrid.add(chkSelect, 2, row);
+
             checkBoxes.add(new RoomCheckBox(chkSelect, room.getRoomNumber()));
             row++;
         }
@@ -93,7 +91,6 @@ public class Room_selection_controller {
     @FXML
     void handleBookSelected(ActionEvent event) {
         String selectedRoom = null;
-
         for (RoomCheckBox rcb : checkBoxes) {
             if (rcb.checkBox.isSelected()) {
                 selectedRoom = rcb.roomNumber;
@@ -102,10 +99,24 @@ public class Room_selection_controller {
         }
 
         if (selectedRoom != null) {
-//            System.out.println("Booking Room: " + selectedRoom);
             goToGuestDetails(event, selectedRoom);
         } else {
-//            System.out.println("Please select a room.");
+            System.out.println("Please select a room.");
+        }
+    }
+
+    // --- ADDED THIS METHOD TO FIX THE CRASH ---
+    @FXML
+    void handleBack(ActionEvent event) {
+        try {
+            // Assuming you want to go back to "room_type.fxml"
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("room_type.fxml"));
+            Parent root = loader.load();
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -113,22 +124,10 @@ public class Room_selection_controller {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("confirmbooking.fxml"));
             Parent root = loader.load();
-            bookconfirm controller = loader.getController();
-            controller.setRoomData(roomNumber);
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            stage.setScene(new Scene(root));
-            stage.show();
 
-        } catch (IOException e) {
-            e.printStackTrace();
-//            System.out.println("Error loading confirmbooking.fxml");
-        }
-    }
-    @FXML
-    void handleBackAction(ActionEvent event) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("room_type.fxml"));
-            Parent root = loader.load();
+            bookconfirm controller = loader.getController();
+            controller.setRoomData(roomNumber, currentPrice);
+
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.setScene(new Scene(root));
             stage.show();
