@@ -21,7 +21,6 @@ public class Room_selection_controller {
     @FXML
     private GridPane roomsGrid;
 
-    // Data passed from previous screen
     private String currentRoomType;
     private double currentPrice;
 
@@ -105,11 +104,10 @@ public class Room_selection_controller {
         }
     }
 
-    // --- ADDED THIS METHOD TO FIX THE CRASH ---
+
     @FXML
     void handleBack(ActionEvent event) {
         try {
-            // Assuming you want to go back to "room_type.fxml"
             FXMLLoader loader = new FXMLLoader(getClass().getResource("room_type.fxml"));
             Parent root = loader.load();
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
