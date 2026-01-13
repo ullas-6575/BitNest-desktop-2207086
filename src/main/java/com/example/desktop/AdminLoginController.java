@@ -29,7 +29,7 @@ public class AdminLoginController {
         String username = txtUsername.getText();
         String password = txtPassword.getText();
         lblError.setText("");
-        if ("ullas".equals(username) && "12345686".equals(password)) {
+        if ("ullas".equals(username) && "86".equals(password)) {
             lblError.setStyle("-fx-text-fill: green;");
             lblError.setText("Login Successful!");
             try {
@@ -44,7 +44,6 @@ public class AdminLoginController {
 
             } catch (IOException e) {
                 e.printStackTrace();
-//                System.out.println("Error: Could not load adminpage.fxml");
             }
 
         } else {

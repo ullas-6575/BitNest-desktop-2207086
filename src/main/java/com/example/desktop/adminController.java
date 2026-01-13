@@ -1,57 +1,58 @@
 package com.example.desktop;
 
-import javafx.fxml.FXML;
 import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-
 import java.io.IOException;
 
 public class adminController {
 
     @FXML
-    void handleSeeGuests(ActionEvent event) {
+    void handleBackAction(ActionEvent event) {
+        switchScene(event, "hello-view.fxml");
+    }
 
-        System.out.println("Loading Guest List...");
+    @FXML
+    void handleSeeGuests(ActionEvent event) {
+        switchScene(event, "guest-list.fxml");
+    }
+
+
+    @FXML
+    void handleAddRoom(ActionEvent event) {
+
+        switchScene(event, "add-room.fxml");
+    }
+
+    @FXML
+    void handleSearch(ActionEvent event) {
+
+        switchScene(event, "search-guest.fxml");
     }
 
     @FXML
     void handleModify(ActionEvent event) {
-
-        System.out.println("Opening Modify Screen...");
+        switchScene(event, "modify-booking.fxml");
     }
-
     @FXML
     void handleCheckout(ActionEvent event) {
-
-        System.out.println("Proceeding to Checkout...");
+        switchScene(event, "checkout.fxml");
     }
-    @FXML
-    void handleSearch(ActionEvent event) {
 
-        String input = "Room 101";
-        System.out.println("Searching for: " + input);
-
-
-    }
-    @FXML
-    void handleBackAction(ActionEvent event) {
+    private void switchScene(ActionEvent event, String fxmlFile) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("admin-login.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlFile));
             Parent root = loader.load();
-
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-
-            Scene scene = new Scene(root);
-            stage.setScene(scene);
+            stage.setScene(new Scene(root));
             stage.show();
-
         } catch (IOException e) {
             e.printStackTrace();
-            System.out.println("Error: Could not load admin-login.fxml to go back.");
+            System.out.println("Error loading: " + fxmlFile);
         }
     }
 }

@@ -21,53 +21,60 @@ public class Room_selection_controller {
     @FXML
     private GridPane roomsGrid;
 
-    private String currentRoomType;
-    private double currentPrice;
-
     private List<RoomCheckBox> checkBoxes = new ArrayList<>();
 
     private static class RoomCheckBox {
         CheckBox checkBox;
         String roomNumber;
+        double price;
 
-        public RoomCheckBox(CheckBox checkBox, String roomNumber) {
+        public RoomCheckBox(CheckBox checkBox, String roomNumber, double price) {
             this.checkBox = checkBox;
             this.roomNumber = roomNumber;
+            this.price = price;
         }
     }
 
-    public void setBookingData(String roomType, double price) {
-        this.currentRoomType = roomType;
-        this.currentPrice = price;
-        List<Room> rooms = getFixedRooms(roomType);
+    public static class Room {
+        private String roomNumber;
+        private String status;
+        private double price;
+
+        public Room(String roomNumber, String status, double price) {
+            this.roomNumber = roomNumber;
+            this.status = status;
+            this.price = price;
+        }
+
+        public String getRoomNumber() { return roomNumber; }
+        public String getStatus() { return status; }
+        public double getPrice() { return price; }
+    }
+
+    public void loadAllRooms() {
+        List<Room> rooms = DatabaseHandler.getAllRooms();
         loadRoomsToGrid(rooms);
     }
 
-    private List<Room> getFixedRooms(String type) {
-        List<Room> list = new ArrayList<>();
-        if (type.contains("Single")) {
-            list.add(new Room("101", "Available"));
-            list.add(new Room("102", "Available"));
-            list.add(new Room("103", "Available"));
-            list.add(new Room("206", "Available"));
-            list.add(new Room("207", "Available"));
-        } else if (type.contains("Apartment")) {
-            list.add(new Room("201", "Available"));
-            list.add(new Room("202", "Available"));
-            list.add(new Room("203", "Available"));
-            list.add(new Room("110", "Available"));
-            list.add(new Room("111", "Available"));
-        }
-        return list;
+    public void setBookingData(String roomType, double price) {
+        List<Room> rooms = DatabaseHandler.getAvailableRoomsByType(roomType);
+        loadRoomsToGrid(rooms);
     }
 
     private void loadRoomsToGrid(List<Room> rooms) {
         roomsGrid.getChildren().removeIf(node -> GridPane.getRowIndex(node) != null && GridPane.getRowIndex(node) > 0);
         checkBoxes.clear();
 
+        if (rooms.isEmpty()) {
+            Label emptyLbl = new Label("No rooms found.");
+            emptyLbl.setTextFill(Color.RED);
+            roomsGrid.add(emptyLbl, 0, 1);
+            return;
+        }
+
         int row = 1;
         for (Room room : rooms) {
-            Label lblNum = new Label(room.getRoomNumber());
+            Label lblNum = new Label(room.getRoomNumber() + " ($" + room.getPrice() + ")");
             Label lblStatus = new Label(room.getStatus());
             CheckBox chkSelect = new CheckBox();
 
@@ -82,7 +89,7 @@ public class Room_selection_controller {
             roomsGrid.add(lblStatus, 1, row);
             roomsGrid.add(chkSelect, 2, row);
 
-            checkBoxes.add(new RoomCheckBox(chkSelect, room.getRoomNumber()));
+            checkBoxes.add(new RoomCheckBox(chkSelect, room.getRoomNumber(), room.getPrice()));
             row++;
         }
     }
@@ -90,25 +97,27 @@ public class Room_selection_controller {
     @FXML
     void handleBookSelected(ActionEvent event) {
         String selectedRoom = null;
+        double selectedPrice = 0.0;
+
         for (RoomCheckBox rcb : checkBoxes) {
             if (rcb.checkBox.isSelected()) {
                 selectedRoom = rcb.roomNumber;
+                selectedPrice = rcb.price;
                 break;
             }
         }
 
         if (selectedRoom != null) {
-            goToGuestDetails(event, selectedRoom);
+            goToGuestDetails(event, selectedRoom, selectedPrice);
         } else {
             System.out.println("Please select a room.");
         }
     }
 
-
     @FXML
     void handleBack(ActionEvent event) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("room_type.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("hello-view.fxml"));
             Parent root = loader.load();
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.setScene(new Scene(root));
@@ -118,13 +127,13 @@ public class Room_selection_controller {
         }
     }
 
-    private void goToGuestDetails(ActionEvent event, String roomNumber) {
+    private void goToGuestDetails(ActionEvent event, String roomNumber, double price) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("confirmbooking.fxml"));
             Parent root = loader.load();
 
             bookconfirm controller = loader.getController();
-            controller.setRoomData(roomNumber, currentPrice);
+            controller.setRoomData(roomNumber, price);
 
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.setScene(new Scene(root));
