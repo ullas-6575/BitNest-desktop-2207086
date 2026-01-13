@@ -26,7 +26,7 @@ public class HelloController implements Initializable {
 
         btnBookRoom.setOnAction(event -> {
             try {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("room-selection.fxml"));
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("room_selection.fxml"));
                 Parent root = loader.load();
 
                 Room_selection_controller controller = loader.getController();

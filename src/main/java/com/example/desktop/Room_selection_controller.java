@@ -23,6 +23,7 @@ public class Room_selection_controller {
 
     private List<RoomCheckBox> checkBoxes = new ArrayList<>();
 
+
     private static class RoomCheckBox {
         CheckBox checkBox;
         String roomNumber;
@@ -35,6 +36,7 @@ public class Room_selection_controller {
         }
     }
 
+
     public static class Room {
         private String roomNumber;
         private String status;
@@ -45,7 +47,6 @@ public class Room_selection_controller {
             this.status = status;
             this.price = price;
         }
-
         public String getRoomNumber() { return roomNumber; }
         public String getStatus() { return status; }
         public double getPrice() { return price; }
@@ -53,11 +54,6 @@ public class Room_selection_controller {
 
     public void loadAllRooms() {
         List<Room> rooms = DatabaseHandler.getAllRooms();
-        loadRoomsToGrid(rooms);
-    }
-
-    public void setBookingData(String roomType, double price) {
-        List<Room> rooms = DatabaseHandler.getAvailableRoomsByType(roomType);
         loadRoomsToGrid(rooms);
     }
 
@@ -74,9 +70,10 @@ public class Room_selection_controller {
 
         int row = 1;
         for (Room room : rooms) {
-            Label lblNum = new Label(room.getRoomNumber() + " ($" + room.getPrice() + ")");
+            Label lblNum = new Label(room.getRoomNumber() + " (tk " + room.getPrice() + ")");
             Label lblStatus = new Label(room.getStatus());
             CheckBox chkSelect = new CheckBox();
+
 
             if ("Booked".equalsIgnoreCase(room.getStatus())) {
                 lblStatus.setTextFill(Color.RED);
@@ -96,29 +93,34 @@ public class Room_selection_controller {
 
     @FXML
     void handleBookSelected(ActionEvent event) {
-        String selectedRoom = null;
-        double selectedPrice = 0.0;
+        List<String> selectedRooms = new ArrayList<>();
+        double totalDailyPrice = 0.0;
+
 
         for (RoomCheckBox rcb : checkBoxes) {
             if (rcb.checkBox.isSelected()) {
-                selectedRoom = rcb.roomNumber;
-                selectedPrice = rcb.price;
-                break;
+                selectedRooms.add(rcb.roomNumber);
+                totalDailyPrice += rcb.price;
             }
         }
 
-        if (selectedRoom != null) {
-            goToGuestDetails(event, selectedRoom, selectedPrice);
+        if (!selectedRooms.isEmpty()) {
+            goToGuestDetails(event, selectedRooms, totalDailyPrice);
         } else {
-            System.out.println("Please select a room.");
+            System.out.println("Please select at least one room.");
         }
     }
 
-    @FXML
-    void handleBack(ActionEvent event) {
+    private void goToGuestDetails(ActionEvent event, List<String> roomNumbers, double totalDailyPrice) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("hello-view.fxml"));
+
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("confirmbooking.fxml"));
             Parent root = loader.load();
+
+
+            bookconfirm controller = loader.getController();
+            controller.setBookingData(roomNumbers, totalDailyPrice);
+
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.setScene(new Scene(root));
             stage.show();
@@ -127,14 +129,11 @@ public class Room_selection_controller {
         }
     }
 
-    private void goToGuestDetails(ActionEvent event, String roomNumber, double price) {
+    @FXML
+    void handleBack(ActionEvent event) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("confirmbooking.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("hello-view.fxml"));
             Parent root = loader.load();
-
-            bookconfirm controller = loader.getController();
-            controller.setRoomData(roomNumber, price);
-
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.setScene(new Scene(root));
             stage.show();

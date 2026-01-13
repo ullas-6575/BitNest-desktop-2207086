@@ -22,6 +22,8 @@ public class DatabaseHandler {
 
     public static void initDB() {
         try (Connection conn = connect(); Statement stmt = conn.createStatement()) {
+
+
             String sqlRooms = "CREATE TABLE IF NOT EXISTS rooms (" +
                     "room_number TEXT PRIMARY KEY, " +
                     "type TEXT, " +
@@ -33,11 +35,21 @@ public class DatabaseHandler {
                     "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
                     "guest_name TEXT, " +
                     "phone TEXT, " +
+                    "nid TEXT, " +
                     "check_in TEXT, " +
                     "check_out TEXT, " +
                     "room_number TEXT, " +
                     "FOREIGN KEY(room_number) REFERENCES rooms(room_number))";
             stmt.execute(sqlBookings);
+
+
+            try {
+                stmt.execute("ALTER TABLE bookings ADD COLUMN nid TEXT");
+                System.out.println("Database Updated: Added 'nid' column.");
+            } catch (SQLException e) {
+
+            }
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -131,6 +143,47 @@ public class DatabaseHandler {
         }
     }
 
+    public static boolean saveBooking(String name, String phone, String nid,
+                                      String checkIn, String checkOut, List<String> roomNumbers) {
+
+        String insertSql = "INSERT INTO bookings (room_number, guest_name, phone, nid, check_in, check_out) VALUES (?, ?, ?, ?, ?, ?)";
+        String updateRoomSql = "UPDATE rooms SET is_available = 0 WHERE room_number = ?";
+
+        try (Connection conn = connect()) {
+            conn.setAutoCommit(false);
+
+            try (PreparedStatement pstInsert = conn.prepareStatement(insertSql);
+                 PreparedStatement pstUpdate = conn.prepareStatement(updateRoomSql)) {
+
+                for (String room : roomNumbers) {
+                    pstInsert.setString(1, room);
+                    pstInsert.setString(2, name);
+                    pstInsert.setString(3, phone);
+                    pstInsert.setString(4, nid);
+                    pstInsert.setString(5, checkIn);
+                    pstInsert.setString(6, checkOut);
+                    pstInsert.addBatch();
+                    pstUpdate.setString(1, room);
+                    pstUpdate.addBatch();
+                }
+
+                pstInsert.executeBatch();
+                pstUpdate.executeBatch();
+
+                conn.commit();
+                return true;
+
+            } catch (SQLException e) {
+                conn.rollback();
+                e.printStackTrace();
+                return false;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
     public static List<Map<String, String>> getAllBookings() {
         List<Map<String, String>> bookingList = new ArrayList<>();
         String sql = "SELECT * FROM bookings ORDER BY room_number ASC";
@@ -172,6 +225,7 @@ public class DatabaseHandler {
             e.printStackTrace();
         }
     }
+
     public static List<String> getAllRoomNumbers() {
         List<String> rooms = new ArrayList<>();
         String sql = "SELECT room_number FROM rooms ORDER BY room_number ASC";
@@ -186,7 +240,6 @@ public class DatabaseHandler {
         }
         return rooms;
     }
-
 
     public static Map<String, String> getGuestByRoom(String roomNumber) {
         Map<String, String> details = new HashMap<>();
@@ -244,6 +297,7 @@ public class DatabaseHandler {
             return false;
         }
     }
+
     public static boolean checkOutGuest(String roomNumber) {
         String deleteBooking = "DELETE FROM bookings WHERE room_number = ?";
         String updateRoom = "UPDATE rooms SET is_available = 1 WHERE room_number = ?";
@@ -254,10 +308,8 @@ public class DatabaseHandler {
             try (PreparedStatement pstDel = conn.prepareStatement(deleteBooking);
                  PreparedStatement pstUpd = conn.prepareStatement(updateRoom)) {
 
-
                 pstDel.setString(1, roomNumber);
                 pstDel.executeUpdate();
-
 
                 pstUpd.setString(1, roomNumber);
                 pstUpd.executeUpdate();
